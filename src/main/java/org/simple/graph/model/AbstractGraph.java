@@ -12,7 +12,7 @@ public abstract class AbstractGraph {
 
     protected List<Edge> edgeList = new ArrayList<>();
 
-    public void addVertex(Vertex vertex) throws Exception {
+    public void addVertex(Vertex vertex) throws ObjectExistsException {
         if(Objects.nonNull(getVertexById(vertex.getId()))){
             throw new ObjectExistsException("Vertex with id " + vertex.getId() + " already exists");
         }

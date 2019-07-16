@@ -2,6 +2,8 @@ package org.simple.graph;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.simple.graph.exception.ObjectExistsException;
+import org.simple.graph.exception.ObjectNotFoundException;
 import org.simple.graph.model.Edge;
 import org.simple.graph.model.UndirectedGraph;
 import org.simple.graph.model.Vertex;
@@ -12,7 +14,7 @@ import java.util.List;
 
 public class UnDirectedGraphTest {
 
-    private UndirectedGraph createTestGraph() throws Exception {
+    private UndirectedGraph createTestGraph() throws ObjectExistsException {
         UndirectedGraph undirectedGraph = new UndirectedGraph();
 
         Vertex vertex1 = new Vertex("1","myVertex",1);
@@ -85,5 +87,16 @@ public class UnDirectedGraphTest {
         int pathValue = result.stream().mapToInt(Edge::getValue).sum();
         Assert.assertEquals(8,pathValue);
 
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testLimitationException() throws ObjectExistsException, ObjectNotFoundException {
+        UndirectedGraph graph = createTestGraph();
+        GraphService graphService = new GraphServiceImpl(graph);
+        graph.addEdge(new Edge("21",-10,graph.getVertexById("1"),graph.getVertexById("2")));
+        Vertex vertex3 = graph.getVertexById("1");
+        Vertex vertex6 = graph.getVertexById("2");
+
+        List<Edge> result = graphService.searchShortestPath(vertex3,vertex6);
     }
 }

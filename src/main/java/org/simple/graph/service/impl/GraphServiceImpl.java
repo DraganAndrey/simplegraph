@@ -17,8 +17,6 @@ public class GraphServiceImpl implements GraphService {
 
     private AbstractGraph graph;
 
-    private boolean searchEnded = false;
-
     public GraphServiceImpl(AbstractGraph graph) {
         this.graph = graph;
     }
@@ -27,6 +25,10 @@ public class GraphServiceImpl implements GraphService {
     public List<Edge> searchShortestPath(Vertex source, Vertex destination) throws ObjectNotFoundException {
         if(Objects.isNull(source) || Objects.isNull(destination)){
             throw new ObjectNotFoundException("Source or destination doesn't exist");
+        }
+
+        if(graph.getEdgeList().stream().anyMatch(edge -> edge.getValue() <=0)){
+            throw new RuntimeException("Found edges with 0 or less value, calculation cancelled");
         }
 
         List<Vertex> notVisited = new ArrayList(graph.getVertexList());
@@ -84,60 +86,6 @@ public class GraphServiceImpl implements GraphService {
         }
         buildShortWayByVertex(tracker.get(destination).getParentVertex(),vertexList,tracker);
     }
-
-    /**
-     * Method visits vertex until reach requirement
-     * @param vertex
-     * @param searchable
-     * @param path
-     * @param visitedVertexIdList
-     * @param comeByEdge
-     */
-    private void visitUntilSearchedVertex(Vertex vertex, Vertex searchable, List<Edge> path, List<String> visitedVertexIdList, Edge comeByEdge){
-
-        if(searchEnded){
-            return;
-        }
-
-        if(Objects.nonNull(comeByEdge)){
-            path.add(comeByEdge);
-        }
-        if(vertex.getId().equals(searchable.getId())){
-            return;
-        }
-
-        String currentVertexId = vertex.getId();
-        List<Edge> edgeToVisit = graph.getEdgeList()
-                .stream()
-                .filter(edge -> edge.getSource().getId().equals(currentVertexId)
-                        && !visitedVertexIdList.contains(edge.getDestination().getId()))
-                .collect(Collectors.toList());
-
-        visitedVertexIdList.add(currentVertexId);
-
-        if(edgeToVisit.isEmpty()){
-            path.remove(comeByEdge);
-            return;
-        }
-
-
-
-        Edge endEdge = edgeToVisit
-                .stream()
-                .filter(edge -> edge.getDestination().getId().equals(searchable.getId()))
-                .findAny().orElse(null);
-        if(Objects.nonNull(endEdge)){
-            path.add(endEdge);
-            searchEnded = true;
-            return;
-        }
-
-        edgeToVisit.forEach(edge -> {
-            visitUntilSearchedVertex(edge.getDestination(), searchable,path,visitedVertexIdList,edge);
-        });
-
-    }
-
 
     /**
      * Class contains information
