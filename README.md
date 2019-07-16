@@ -6,6 +6,9 @@ Features:
 3) Each Edge has value (It is usually known as weight)
 4) Graph Service able to calculate path between vertexes
 
+Limitation
+1) Path searching doesn't work for edges with negatives and 0 values
+
 Usage:
 
 To Create Graph you can use:
