@@ -12,6 +12,7 @@ Limitation
 Usage:
 
 To Create Graph you can use:
+    
     DirectedGraph directedGraph = new DirectedGraph();
 
 Then create a few Vertexes
