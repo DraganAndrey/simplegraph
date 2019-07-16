@@ -35,11 +35,11 @@ Of course add edge and vertexes in graph:
 
 To calculate path create service by line:
 
-   GraphService graphService = new GraphServiceImpl(graph);
+    GraphService graphService = new GraphServiceImpl(graph);
 
 
 Then to receive list of edges between vertexes use:
 
-   List<Edge> result = graphService.searchShortestPath(vertex1,vertex2);
+    List<Edge> result = graphService.searchShortestPath(vertex1,vertex2);
 
 
